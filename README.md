@@ -8,8 +8,6 @@
 
 <sub>Install🖥️ from <a href="">Chrome Webstore</a></sub>
 
-[![Redium Demo](https://img.youtube.com/vi/NKIildCasO4/0.jpg)](https://youtu.be/NKIildCasO4?si=9WLJO5ksxjcx4gLU)
-
-![](https://github.com/kubosuke/redium/raw/main/demo.mov)
+![](demo.mov)
 
 </div>
