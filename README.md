@@ -8,6 +8,18 @@
 
 <sub>Install🖥️ from <a href="">Chrome Webstore</a></sub>
 
-</div>
-
 [![Redium Demo](https://img.youtube.com/vi/NKIildCasO4/0.jpg)](https://youtu.be/NKIildCasO4?si=9WLJO5ksxjcx4gLU)
+
+<p>
+  <video
+    controls
+    playsinline
+    preload="metadata"
+    width="720"
+    src="https://github.com/kubosuke/redium/raw/main/demo.mov"
+  ></video>
+</p>
+
+<sub><a href="https://github.com/kubosuke/redium/raw/main/demo.mov">download demo.mov</a></sub>
+
+</div>
