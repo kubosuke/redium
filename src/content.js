@@ -746,6 +746,10 @@ import {
   /** @type {readonly ["white", "sepia", "black"]} */
   const THEME_IDS = ["white", "sepia", "black"];
 
+  const FONT_KEY = "rediumFont";
+  /** @type {readonly ["sans", "serif"]} */
+  const FONT_IDS = ["sans", "serif"];
+
   let readerKeyboardShortcutInstalled = false;
   let toggleOutsideCloseInstalled = false;
 
@@ -846,6 +850,16 @@ import {
     return "white";
   }
 
+  function readFont() {
+    try {
+      const v = localStorage.getItem(FONT_KEY);
+      if (v && FONT_IDS.indexOf(v) !== -1) return v;
+    } catch (e) {
+      /* ignore */
+    }
+    return "serif";
+  }
+
   /**
    * @param {EventTarget | null} target
    */
@@ -926,6 +940,21 @@ import {
     }
   }
 
+  function syncFontTabUi() {
+    const wrap = document.getElementById("redium-toggle");
+    if (!wrap) return;
+    const current =
+      document.documentElement.getAttribute("data-redium-font") || "serif";
+    const tabs = wrap.querySelectorAll(".redium-font-tab");
+    for (let i = 0; i < tabs.length; i++) {
+      const btn = tabs[i];
+      const fid = btn.getAttribute("data-font");
+      const active = fid === current;
+      btn.classList.toggle("redium-font-tab-active", active);
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+    }
+  }
+
   /**
    * @param {string} theme
    */
@@ -939,6 +968,21 @@ import {
       /* ignore */
     }
     syncThemeTabUi();
+  }
+
+  /**
+   * @param {string} fontId
+   */
+  function applyFont(fontId) {
+    var f = fontId;
+    if (FONT_IDS.indexOf(f) === -1) f = "serif";
+    document.documentElement.setAttribute("data-redium-font", f);
+    try {
+      localStorage.setItem(FONT_KEY, f);
+    } catch (e) {
+      /* ignore */
+    }
+    syncFontTabUi();
   }
 
   function isReaderModeOn() {
@@ -1082,7 +1126,7 @@ import {
     panel.id = "redium-toggle-menu";
     panel.className = "redium-toggle-panel";
     panel.setAttribute("role", "region");
-    panel.setAttribute("aria-label", "Redium reader and theme");
+    panel.setAttribute("aria-label", "Redium reader, theme, and font");
 
     const brand = document.createElement("div");
     brand.className = "redium-toggle-panel-brand";
@@ -1147,9 +1191,41 @@ import {
     themeSection.appendChild(themeLabelEl);
     themeSection.appendChild(tabList);
 
+    const fontSection = document.createElement("div");
+    fontSection.className = "redium-toggle-font-section";
+
+    const fontLabelEl = document.createElement("div");
+    fontLabelEl.className = "redium-theme-label";
+    fontLabelEl.textContent = "Font";
+
+    const fontTabList = document.createElement("div");
+    fontTabList.className = "redium-font-tabs";
+    fontTabList.setAttribute("role", "tablist");
+    fontTabList.setAttribute("aria-label", "Reader typeface");
+
+    const fontTabLabels = { sans: "Neue", serif: "Serif" };
+
+    for (let fi = 0; fi < FONT_IDS.length; fi++) {
+      const id = FONT_IDS[fi];
+      const fbtn = document.createElement("button");
+      fbtn.type = "button";
+      fbtn.className = "redium-font-tab";
+      fbtn.setAttribute("data-font", id);
+      fbtn.setAttribute("role", "tab");
+      fbtn.textContent = fontTabLabels[id] || id;
+      fbtn.addEventListener("click", function () {
+        applyFont(id);
+      });
+      fontTabList.appendChild(fbtn);
+    }
+
+    fontSection.appendChild(fontLabelEl);
+    fontSection.appendChild(fontTabList);
+
     panel.appendChild(brand);
     panel.appendChild(readerSection);
     panel.appendChild(themeSection);
+    panel.appendChild(fontSection);
 
     const fab = document.createElement("button");
     fab.type = "button";
@@ -1223,6 +1299,7 @@ import {
 
     document.body.appendChild(wrap);
     applyTheme(readTheme());
+    applyFont(readFont());
     installReaderKeyboardShortcut();
     installToggleOutsideClose();
   }
