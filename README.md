@@ -8,6 +8,4 @@
 
 <sub>Install🖥️ from <a href="">Chrome Webstore</a></sub>
 
-![](./demo.mov)
-
 </div>
