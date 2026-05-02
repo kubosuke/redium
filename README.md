@@ -6,6 +6,8 @@
 
 <strong>Medium-ify Reddit</strong>
 
-<sub>Install🖥️ from <a href="https://chrome.google.com/webstore/detail/google-calendar-right-cli/gecagpecilkplgfkfpbpfhjkfelfdocd?hl=en&authuser=0">Chrome Webstore</a></sub>
+<sub>Install🖥️ from <a href="">Chrome Webstore</a></sub>
 
 </div>
+
+[![Redium Demo](https://img.youtube.com/vi/NKIildCasO4/0.jpg)](https://youtu.be/NKIildCasO4?si=9WLJO5ksxjcx4gLU)
