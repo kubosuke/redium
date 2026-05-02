@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output (run `npm run build` after clone)
+dist/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs & debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE / editors
+.idea/
+*.swp
+*.swo
+*~
+
+# Extension packaging (keep keys out of git)
+*.pem
+*.crx
+*-store.zip
+redium*.zip

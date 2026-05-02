@@ -1,0 +1,30 @@
+/* Reader mode: hide native Reddit except Redium overlay + floating toggle. */
+html,
+body {
+  margin: 0;
+}
+
+body.redium-reader-on {
+  background: #fff !important;
+}
+
+:root[data-redium-theme="sepia"] body.redium-reader-on {
+  background: #f7f1e3 !important;
+}
+
+:root[data-redium-theme="black"] body.redium-reader-on {
+  background: #121212 !important;
+}
+
+body.redium-reader-on > *:not(#redium-root):not(#redium-toggle) {
+  display: none !important;
+}
+
+/* Reader panel hidden until mode is on (or before first paint). */
+#redium-root {
+  display: none !important;
+}
+
+body.redium-reader-on #redium-root {
+  display: block !important;
+}

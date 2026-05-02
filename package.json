@@ -1,0 +1,16 @@
+{
+  "name": "redium",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "esbuild src/content.js --bundle --outfile=dist/content.js --format=iife --platform=browser --legal-comments=none",
+    "build:watch": "esbuild src/content.js --bundle --outfile=dist/content.js --format=iife --platform=browser --legal-comments=none --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "vitest": "^3.0.0"
+  }
+}

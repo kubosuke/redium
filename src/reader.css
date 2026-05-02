@@ -1,0 +1,934 @@
+/* Medium-ish reader: centered column, serif body, calm hierarchy */
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
+/* Floating FAB + expandable panel (above reader overlay). */
+#redium-toggle {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  font-family:
+    "SF Pro Text",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Icon trigger — always visible */
+.redium-toggle-fab {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 28px rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition:
+    transform 0.22s cubic-bezier(0.33, 1, 0.68, 1),
+    box-shadow 0.22s ease,
+    border-color 0.2s ease;
+}
+
+.redium-toggle-fab:active {
+  transform: scale(0.96);
+}
+
+.redium-toggle-fab-img {
+  display: block;
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.redium-toggle-fab.redium-toggle-fab-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+/* Menu — glass surface, hidden until hover / focus-within / tap-expanded */
+.redium-toggle-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 12px;
+  padding: 14px 14px 12px;
+  min-width: 196px;
+  max-width: 240px;
+  color: rgba(15, 23, 42, 0.92);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 12px 40px rgba(15, 23, 42, 0.12),
+    0 4px 12px rgba(15, 23, 42, 0.06);
+  opacity: 0;
+  transform: translateY(16px) scale(0.92);
+  transform-origin: bottom right;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.28s linear;
+}
+
+#redium-toggle:hover .redium-toggle-panel,
+#redium-toggle:focus-within .redium-toggle-panel,
+#redium-toggle.redium-toggle-expanded .redium-toggle-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+#redium-toggle:hover .redium-toggle-fab,
+#redium-toggle:focus-within .redium-toggle-fab,
+#redium-toggle.redium-toggle-expanded .redium-toggle-fab {
+  transform: scale(1.03);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 12px 36px rgba(0, 0, 0, 0.32),
+    0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.redium-toggle-panel-brand {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.38);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.redium-toggle-reader-section {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.redium-toggle-reader-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.redium-toggle-label.redium-toggle-reader-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.redium-toggle-label {
+  cursor: pointer;
+}
+
+.redium-toggle-input {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+.redium-toggle-text {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  color: rgba(15, 23, 42, 0.92);
+}
+
+.redium-toggle-hint {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  color: rgba(15, 23, 42, 0.38);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.redium-toggle-theme-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.redium-theme-label {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.38);
+  padding-left: 2px;
+}
+
+.redium-theme-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.redium-theme-tab {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+  padding: 8px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(15, 23, 42, 0.48);
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.redium-theme-tab:hover {
+  background: rgba(255, 255, 255, 0.65);
+  color: rgba(15, 23, 42, 0.85);
+}
+
+.redium-theme-tab-active {
+  background: #0f172a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+.redium-theme-tab-active:hover {
+  background: #1e293b;
+  color: #fff;
+}
+
+#redium-root {
+  position: fixed;
+  inset: 0;
+  /* Below #redium-toggle so the floating switch stays clickable */
+  z-index: 2147483646;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+  padding: 48px 24px 80px;
+  background: #fff;
+  /* Thread collapse chip: mask vertical border where icon overlaps reader canvas */
+  --redium-canvas: #ffffff;
+  --redium-canvas-hover: #ececec;
+  color: rgba(0, 0, 0, 0.84);
+  font-family:
+    "Source Serif Pro",
+    "Georgia",
+    "Times New Roman",
+    serif;
+  font-size: 20px;
+  line-height: 1.65;
+}
+
+#redium-root *,
+#redium-root *::before,
+#redium-root *::after {
+  box-sizing: border-box;
+}
+
+.redium-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.redium-post-title {
+  font-family:
+    "Source Serif Pro",
+    "Georgia",
+    "Times New Roman",
+    serif;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.redium-post-meta {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.55);
+  margin-bottom: 40px;
+}
+
+.redium-post-meta a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.redium-clap-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  margin: 0 1px 0 0;
+}
+
+.redium-clap-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 2px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease;
+}
+
+.redium-clap-btn:hover {
+  color: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.redium-clap-btn:active {
+  transform: scale(0.94);
+}
+
+.redium-clap-btn svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.redium-clap-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Clap + score are display-only (no voting from reader). */
+.redium-clap-readonly .redium-clap-btn {
+  cursor: default;
+  transition: none;
+}
+
+.redium-clap-readonly .redium-clap-btn:hover,
+.redium-clap-readonly .redium-clap-btn:active {
+  color: rgba(0, 0, 0, 0.45);
+  background: transparent;
+  transform: none;
+}
+
+.redium-post-body {
+  margin-bottom: 56px;
+}
+
+.redium-post-body img,
+.redium-post-body video {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.redium-post-body a {
+  color: #0066cc;
+}
+
+/* Fenced code blocks: light panel, black text */
+.redium-post-body pre,
+.redium-comment-body pre {
+  background: #f2f2f2;
+  color: #000;
+  padding: 14px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+  font-size: 0.92em;
+  line-height: 1.5;
+  font-family:
+    ui-monospace,
+    "SF Mono",
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+}
+
+.redium-post-body pre code,
+.redium-comment-body pre code,
+.redium-post-body pre *,
+.redium-comment-body pre * {
+  color: #000 !important;
+  background: transparent !important;
+}
+
+/* Inline code: keep dark text on light chip (readable on white page) */
+.redium-post-body :not(pre) > code,
+.redium-comment-body :not(pre) > code,
+.redium-post-body p code:not(pre code),
+.redium-comment-body p code:not(pre code),
+.redium-post-body li code:not(pre code),
+.redium-comment-body li code:not(pre code) {
+  color: rgba(0, 0, 0, 0.88);
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+
+.redium-comments-heading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.redium-comment {
+  margin-bottom: 20px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(0, 0, 0, 0.06);
+  --redium-thread-gutter: 18px; /* border 2px + padding 16px — collapse control aligns to border */
+}
+
+.redium-comment[data-depth="0"] {
+  padding-left: 0;
+  border-left: none;
+  --redium-thread-gutter: 0px;
+}
+
+.redium-comment-header {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.redium-comment-header strong {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.84);
+}
+
+.redium-comment-body {
+  font-size: 19px;
+  line-height: 1.65;
+}
+
+.redium-comment-body p {
+  margin: 0 0 0.85em;
+}
+
+.redium-comment-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Comment meta: smaller clap next to score */
+.redium-clap-comment.redium-clap-inline {
+  vertical-align: middle;
+}
+
+.redium-clap-comment .redium-clap-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.redium-clap-comment .redium-clap-count {
+  font-size: 13px;
+}
+
+/* Collapse / expand nested replies — sit on the same vertical as border-left */
+.redium-comment-collapse-row {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Pull nested rows onto the thread rail (border was inset by padding; body/header stay indented). */
+.redium-comment:not([data-depth="0"]) .redium-comment-collapse-row {
+  margin-left: calc(-1 * var(--redium-thread-gutter, 18px));
+  width: calc(100% + var(--redium-thread-gutter, 18px));
+  box-sizing: border-box;
+}
+
+/* Center the control on the 2px border (midline at 1px) — same for top-level and nested. */
+.redium-comment-collapse-row .redium-thread-toggle {
+  flex-shrink: 0;
+  margin-left: 1px;
+  transform: translateX(-50%);
+  position: relative;
+  z-index: 1;
+  background: var(--redium-canvas, #fff);
+  /* Halo matches canvas so the thread line does not show through the chip */
+  box-shadow: 0 0 0 5px var(--redium-canvas, #fff);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    color 0.15s ease;
+}
+
+.redium-comment-collapse-row .redium-thread-toggle:hover {
+  background: var(--redium-canvas-hover, #ececec);
+  box-shadow: 0 0 0 5px var(--redium-canvas-hover, #ececec);
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.redium-thread-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+  line-height: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.redium-thread-toggle:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.redium-thread-toggle:focus {
+  outline: none;
+}
+
+.redium-thread-toggle:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.redium-thread-toggle-icons {
+  display: inline-flex;
+  align-items: center;
+}
+
+.redium-thread-toggle-icons .redium-thread-icon-plus,
+.redium-thread-toggle-icons .redium-thread-icon-minus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.redium-thread-toggle-icons svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.redium-thread-toggle[aria-expanded="true"] .redium-thread-icon-plus {
+  display: none;
+}
+
+.redium-thread-toggle[aria-expanded="false"] .redium-thread-icon-minus {
+  display: none;
+}
+
+.redium-children.redium-children-collapsed {
+  display: none;
+}
+
+.redium-children {
+  margin-top: 14px;
+}
+
+.redium-comments-wrap {
+  margin-top: 40px;
+}
+
+.redium-muted {
+  color: rgba(0, 0, 0, 0.45);
+  font-style: italic;
+}
+
+.redium-link-out {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.redium-link-out:hover {
+  text-decoration: underline;
+}
+
+/* —— Sepia theme —— */
+:root[data-redium-theme="sepia"] #redium-root {
+  background: #f7f1e3;
+  --redium-canvas: #f7f1e3;
+  --redium-canvas-hover: #ebe4d6;
+  color: #3d3428;
+}
+
+:root[data-redium-theme="sepia"] .redium-post-title {
+  color: #2c2416;
+}
+
+:root[data-redium-theme="sepia"] .redium-post-meta,
+:root[data-redium-theme="sepia"] .redium-comment-header {
+  color: rgba(44, 36, 22, 0.6);
+}
+
+:root[data-redium-theme="sepia"] .redium-post-meta a {
+  color: rgba(44, 36, 22, 0.75);
+}
+
+:root[data-redium-theme="sepia"] .redium-clap-btn {
+  color: rgba(44, 36, 22, 0.45);
+}
+
+:root[data-redium-theme="sepia"] .redium-clap-btn:hover {
+  color: rgba(44, 36, 22, 0.85);
+  background: rgba(44, 36, 22, 0.08);
+}
+
+:root[data-redium-theme="sepia"] .redium-clap-readonly .redium-clap-btn:hover,
+:root[data-redium-theme="sepia"] .redium-clap-readonly .redium-clap-btn:active {
+  color: rgba(44, 36, 22, 0.45);
+  background: transparent;
+  transform: none;
+}
+
+:root[data-redium-theme="sepia"] .redium-clap-count {
+  color: rgba(44, 36, 22, 0.55);
+}
+
+:root[data-redium-theme="sepia"] .redium-post-body a,
+:root[data-redium-theme="sepia"] .redium-link-out {
+  color: #0d4d7a;
+}
+
+:root[data-redium-theme="sepia"] .redium-comments-heading {
+  color: rgba(44, 36, 22, 0.5);
+  border-bottom-color: rgba(44, 36, 22, 0.12);
+}
+
+:root[data-redium-theme="sepia"] .redium-comment {
+  border-left-color: rgba(44, 36, 22, 0.12);
+}
+
+:root[data-redium-theme="sepia"] .redium-comment-header strong {
+  color: #2c2416;
+}
+
+:root[data-redium-theme="sepia"] .redium-thread-toggle {
+  color: rgba(62, 47, 28, 0.4);
+}
+
+:root[data-redium-theme="sepia"] .redium-thread-toggle:hover {
+  background: rgba(44, 36, 22, 0.08);
+  color: rgba(44, 36, 22, 0.78);
+}
+
+/* Rail chip: keep canvas fill (generic hover above would use translucent brown) */
+:root[data-redium-theme="sepia"] .redium-comment-collapse-row .redium-thread-toggle {
+  background: var(--redium-canvas);
+  box-shadow: 0 0 0 5px var(--redium-canvas);
+}
+
+:root[data-redium-theme="sepia"] .redium-comment-collapse-row .redium-thread-toggle:hover {
+  background: var(--redium-canvas-hover);
+  box-shadow: 0 0 0 5px var(--redium-canvas-hover);
+  color: rgba(44, 36, 22, 0.78);
+}
+
+:root[data-redium-theme="sepia"] .redium-muted {
+  color: rgba(44, 36, 22, 0.45);
+}
+
+:root[data-redium-theme="sepia"] .redium-post-body :not(pre) > code,
+:root[data-redium-theme="sepia"] .redium-comment-body :not(pre) > code,
+:root[data-redium-theme="sepia"] .redium-post-body p code:not(pre code),
+:root[data-redium-theme="sepia"] .redium-comment-body p code:not(pre code),
+:root[data-redium-theme="sepia"] .redium-post-body li code:not(pre code),
+:root[data-redium-theme="sepia"] .redium-comment-body li code:not(pre code) {
+  color: #2c2416;
+  background: rgba(44, 36, 22, 0.08);
+}
+
+:root[data-redium-theme="sepia"] #redium-toggle .redium-toggle-panel {
+  background: rgba(254, 251, 243, 0.78);
+  color: rgba(44, 36, 22, 0.88);
+  border-color: rgba(139, 119, 94, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(139, 119, 94, 0.06),
+    0 16px 44px rgba(62, 47, 28, 0.12),
+    0 6px 14px rgba(62, 47, 28, 0.06);
+}
+
+:root[data-redium-theme="sepia"] #redium-toggle:hover .redium-toggle-panel,
+:root[data-redium-theme="sepia"] #redium-toggle:focus-within .redium-toggle-panel,
+:root[data-redium-theme="sepia"] #redium-toggle.redium-toggle-expanded .redium-toggle-panel {
+  border-color: rgba(139, 119, 94, 0.32);
+}
+
+:root[data-redium-theme="sepia"] .redium-toggle-panel-brand,
+:root[data-redium-theme="sepia"] .redium-theme-label {
+  color: rgba(62, 47, 28, 0.42);
+}
+
+:root[data-redium-theme="sepia"] .redium-toggle-text {
+  color: rgba(44, 36, 22, 0.92);
+}
+
+:root[data-redium-theme="sepia"] .redium-toggle-hint {
+  color: rgba(62, 47, 28, 0.42);
+}
+
+:root[data-redium-theme="sepia"] .redium-toggle-reader-section {
+  border-bottom-color: rgba(139, 119, 94, 0.14);
+}
+
+:root[data-redium-theme="sepia"] .redium-theme-tabs {
+  border-color: rgba(139, 119, 94, 0.14);
+  background: rgba(62, 47, 28, 0.06);
+}
+
+:root[data-redium-theme="sepia"] .redium-theme-tab {
+  color: rgba(62, 47, 28, 0.52);
+}
+
+:root[data-redium-theme="sepia"] .redium-theme-tab:hover {
+  background: rgba(255, 252, 245, 0.75);
+  color: rgba(44, 36, 22, 0.9);
+}
+
+:root[data-redium-theme="sepia"] .redium-theme-tab-active {
+  background: #422006;
+  color: #fefce8;
+}
+
+:root[data-redium-theme="sepia"] .redium-theme-tab-active:hover {
+  background: #573419;
+  color: #fefce8;
+}
+
+/* —— Black theme —— */
+:root[data-redium-theme="black"] #redium-root {
+  background: #121212;
+  --redium-canvas: #121212;
+  --redium-canvas-hover: #1e1e1e;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+:root[data-redium-theme="black"] .redium-post-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-redium-theme="black"] .redium-post-meta,
+:root[data-redium-theme="black"] .redium-comment-header {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-redium-theme="black"] .redium-post-meta a {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:root[data-redium-theme="black"] .redium-clap-btn {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+:root[data-redium-theme="black"] .redium-clap-btn:hover {
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-redium-theme="black"] .redium-clap-readonly .redium-clap-btn:hover,
+:root[data-redium-theme="black"] .redium-clap-readonly .redium-clap-btn:active {
+  color: rgba(255, 255, 255, 0.42);
+  background: transparent;
+  transform: none;
+}
+
+:root[data-redium-theme="black"] .redium-clap-count {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-redium-theme="black"] .redium-post-body a,
+:root[data-redium-theme="black"] .redium-link-out {
+  color: #8ab4f8;
+}
+
+:root[data-redium-theme="black"] .redium-comments-heading {
+  color: rgba(255, 255, 255, 0.45);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-redium-theme="black"] .redium-comment {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-redium-theme="black"] .redium-comment-header strong {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+:root[data-redium-theme="black"] .redium-thread-toggle {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+:root[data-redium-theme="black"] .redium-thread-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:root[data-redium-theme="black"] .redium-comment-collapse-row .redium-thread-toggle {
+  background: var(--redium-canvas);
+  box-shadow: 0 0 0 5px var(--redium-canvas);
+}
+
+:root[data-redium-theme="black"] .redium-comment-collapse-row .redium-thread-toggle:hover {
+  background: var(--redium-canvas-hover);
+  box-shadow: 0 0 0 5px var(--redium-canvas-hover);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+:root[data-redium-theme="black"] .redium-muted {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+:root[data-redium-theme="black"] .redium-post-body :not(pre) > code,
+:root[data-redium-theme="black"] .redium-comment-body :not(pre) > code,
+:root[data-redium-theme="black"] .redium-post-body p code:not(pre code),
+:root[data-redium-theme="black"] .redium-comment-body p code:not(pre code),
+:root[data-redium-theme="black"] .redium-post-body li code:not(pre code),
+:root[data-redium-theme="black"] .redium-comment-body li code:not(pre code) {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-redium-theme="black"] #redium-toggle .redium-toggle-panel {
+  background: rgba(23, 23, 23, 0.82);
+  color: rgba(248, 250, 252, 0.92);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 16px 48px rgba(0, 0, 0, 0.55),
+    0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-redium-theme="black"] #redium-toggle:hover .redium-toggle-panel,
+:root[data-redium-theme="black"] #redium-toggle:focus-within .redium-toggle-panel,
+:root[data-redium-theme="black"] #redium-toggle.redium-toggle-expanded .redium-toggle-panel {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+:root[data-redium-theme="black"] .redium-toggle-panel-brand,
+:root[data-redium-theme="black"] .redium-theme-label {
+  color: rgba(248, 250, 252, 0.38);
+}
+
+:root[data-redium-theme="black"] .redium-toggle-text {
+  color: rgba(248, 250, 252, 0.95);
+}
+
+:root[data-redium-theme="black"] .redium-toggle-fab {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 10px 32px rgba(0, 0, 0, 0.55),
+    0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-redium-theme="black"] #redium-toggle:hover .redium-toggle-fab,
+:root[data-redium-theme="black"] #redium-toggle:focus-within .redium-toggle-fab,
+:root[data-redium-theme="black"] #redium-toggle.redium-toggle-expanded .redium-toggle-fab {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 14px 40px rgba(0, 0, 0, 0.65),
+    0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-redium-theme="black"] .redium-toggle-hint {
+  color: rgba(248, 250, 252, 0.35);
+}
+
+:root[data-redium-theme="black"] .redium-toggle-reader-section {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-redium-theme="black"] .redium-theme-tabs {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+:root[data-redium-theme="black"] .redium-theme-tab {
+  color: rgba(248, 250, 252, 0.48);
+}
+
+:root[data-redium-theme="black"] .redium-theme-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(248, 250, 252, 0.92);
+}
+
+:root[data-redium-theme="black"] .redium-theme-tab-active {
+  background: #e2e8f0;
+  color: #0f172a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-redium-theme="black"] .redium-theme-tab-active:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}

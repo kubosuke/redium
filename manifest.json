@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Redium",
+  "version": "1.0.0",
+  "description": "Turns Reddit post pages into a clean Medium-style reader.",
+  "author": "kubosuke <rockubo1130@gmail.com>",
+  "homepage_url": "https://github.com/kubosuke",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Redium",
+    "default_icon": {
+      "16": "icons/redium-app-icon.png",
+      "48": "icons/redium-app-icon.png",
+      "128": "icons/redium-app-icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/redium-app-icon.png", "icons/icon-48.png"],
+      "matches": [
+        "*://www.reddit.com/*",
+        "*://*.reddit.com/*",
+        "*://reddit.com/*",
+        "*://old.reddit.com/*",
+        "*://sh.reddit.com/*"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://reddit.com/*",
+        "*://www.reddit.com/*",
+        "*://old.reddit.com/*",
+        "*://sh.reddit.com/*",
+        "*://*.reddit.com/*"
+      ],
+      "css": ["src/hide-original.css", "src/reader.css"],
+      "js": ["dist/content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
