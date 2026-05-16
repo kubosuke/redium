@@ -8,6 +8,12 @@ import {
   isExtensionRuntimeAlive,
   safeExtensionGetUrl,
 } from "./lib/extension-runtime.js";
+import {
+  REDDIT_LANGUAGES,
+  findLanguageByCode,
+  getTlFromUrl,
+  navigateWithTl,
+} from "./lib/reddit-languages.js";
 
 (function () {
   "use strict";
@@ -955,6 +961,28 @@ import {
     }
   }
 
+  function syncLangUi() {
+    const wrap = document.getElementById("redium-toggle");
+    if (!wrap) return;
+    const currentCode = getTlFromUrl();
+    const current = findLanguageByCode(currentCode);
+    const currentEl = wrap.querySelector(".redium-lang-current");
+    if (currentEl) {
+      currentEl.textContent = current.emoji;
+      currentEl.setAttribute("aria-label", "Current language: " + current.label);
+      currentEl.setAttribute("title", current.label);
+    }
+    const tabs = wrap.querySelectorAll(".redium-lang-btn");
+    for (let i = 0; i < tabs.length; i++) {
+      const btn = tabs[i];
+      const code = btn.getAttribute("data-tl") || "";
+      const active = code === currentCode;
+      btn.classList.toggle("redium-lang-btn-active", active);
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+  }
+
   /**
    * @param {string} theme
    */
@@ -1126,7 +1154,7 @@ import {
     panel.id = "redium-toggle-menu";
     panel.className = "redium-toggle-panel";
     panel.setAttribute("role", "region");
-    panel.setAttribute("aria-label", "Redium reader, theme, and font");
+    panel.setAttribute("aria-label", "Redium reader, theme, font, and language");
 
     const brand = document.createElement("div");
     brand.className = "redium-toggle-panel-brand";
@@ -1222,10 +1250,53 @@ import {
     fontSection.appendChild(fontLabelEl);
     fontSection.appendChild(fontTabList);
 
+    const langSection = document.createElement("div");
+    langSection.className = "redium-toggle-lang-section";
+
+    const langHeader = document.createElement("div");
+    langHeader.className = "redium-lang-header";
+
+    const langLabelEl = document.createElement("div");
+    langLabelEl.className = "redium-theme-label";
+    langLabelEl.textContent = "Language";
+
+    const langCurrent = document.createElement("span");
+    langCurrent.className = "redium-lang-current";
+    langCurrent.setAttribute("aria-hidden", "false");
+
+    langHeader.appendChild(langLabelEl);
+    langHeader.appendChild(langCurrent);
+
+    const langGrid = document.createElement("div");
+    langGrid.className = "redium-lang-grid";
+    langGrid.setAttribute("role", "listbox");
+    langGrid.setAttribute("aria-label", "Reddit display language");
+
+    for (let li = 0; li < REDDIT_LANGUAGES.length; li++) {
+      const lang = REDDIT_LANGUAGES[li];
+      const lbtn = document.createElement("button");
+      lbtn.type = "button";
+      lbtn.className = "redium-lang-btn";
+      lbtn.setAttribute("data-tl", lang.code);
+      lbtn.setAttribute("role", "option");
+      lbtn.textContent = lang.emoji;
+      lbtn.setAttribute("aria-label", lang.label);
+      lbtn.setAttribute("title", lang.label);
+      lbtn.addEventListener("click", function () {
+        if (getTlFromUrl() === lang.code) return;
+        navigateWithTl(lang.code);
+      });
+      langGrid.appendChild(lbtn);
+    }
+
+    langSection.appendChild(langHeader);
+    langSection.appendChild(langGrid);
+
     panel.appendChild(brand);
     panel.appendChild(readerSection);
     panel.appendChild(themeSection);
     panel.appendChild(fontSection);
+    panel.appendChild(langSection);
 
     const fab = document.createElement("button");
     fab.type = "button";
@@ -1300,6 +1371,7 @@ import {
     document.body.appendChild(wrap);
     applyTheme(readTheme());
     applyFont(readFont());
+    syncLangUi();
     installReaderKeyboardShortcut();
     installToggleOutsideClose();
   }

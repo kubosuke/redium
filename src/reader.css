@@ -215,6 +215,79 @@
   border-top: 1px solid rgba(15, 23, 42, 0.06);
 }
 
+.redium-toggle-lang-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.redium-lang-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: 2px;
+}
+
+.redium-lang-current {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.redium-lang-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  max-height: 132px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  -webkit-overflow-scrolling: touch;
+}
+
+.redium-lang-btn {
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease;
+}
+
+.redium-lang-btn:hover {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.redium-lang-btn:active {
+  transform: scale(0.94);
+}
+
+.redium-lang-btn-active {
+  background: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+.redium-lang-btn-active:hover {
+  background: #1e293b;
+}
+
 .redium-theme-label {
   font-size: 10px;
   font-weight: 650;
