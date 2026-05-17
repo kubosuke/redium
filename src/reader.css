@@ -479,6 +479,22 @@
   border-radius: 4px;
 }
 
+/* Reddit's native gallery-carousel (moved live from the post). */
+.redium-post-media-mount {
+  margin-top: 1.5em;
+  max-width: 100%;
+}
+
+.redium-post-media-mount gallery-carousel,
+.redium-post-media-mount [slot="post-media-container"] {
+  max-width: 100%;
+}
+
+.redium-post-media-mount img {
+  max-width: 100%;
+  height: auto;
+}
+
 .redium-post-body a {
   color: #0066cc;
 }
@@ -1054,3 +1070,4 @@
   background: #f1f5f9;
   color: #0f172a;
 }
+

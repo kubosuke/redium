@@ -67,6 +67,108 @@ import {
   }
 
   /**
+   * @param {HTMLImageElement} img
+   * @returns {string}
+   */
+  function imageSrcFromImg(img) {
+    if (!img) return "";
+    var src = img.currentSrc || img.src || "";
+    if (src && /^https?:/i.test(src)) return src;
+    var srcset = img.getAttribute("srcset");
+    if (srcset) {
+      var first = srcset.split(",")[0].trim().split(/\s+/)[0];
+      if (first && /^https?:/i.test(first)) return first;
+    }
+    var dataSrc = img.getAttribute("data-url") || img.getAttribute("data-src");
+    if (dataSrc && /^https?:/i.test(dataSrc)) return dataSrc;
+    return "";
+  }
+
+  /** @type {{ media: Element, parent: Node, nextSibling: Node | null } | null} */
+  var nativeMediaRestore = null;
+
+  /**
+   * @param {Element} postEl
+   * @returns {Element | null}
+   */
+  function findPostMediaEl(postEl) {
+    return firstMatch(postEl, [
+      '[slot="post-media-container"]',
+      '[slot="gallery"]',
+      "shreddit-aspect-ratio",
+    ]);
+  }
+
+  /**
+   * @param {Element} postEl
+   * @returns {boolean}
+   */
+  function hasPostMedia(postEl) {
+    return !!findPostMediaEl(postEl);
+  }
+
+  function restoreNativePostMedia() {
+    if (!nativeMediaRestore) return;
+    var slot = nativeMediaRestore;
+    nativeMediaRestore = null;
+    if (!slot.media || !slot.parent) return;
+    try {
+      if (slot.nextSibling && slot.nextSibling.parentNode === slot.parent) {
+        slot.parent.insertBefore(slot.media, slot.nextSibling);
+      } else {
+        slot.parent.appendChild(slot.media);
+      }
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /**
+   * Move Reddit's live gallery / image block into the reader (keeps native slideshow).
+   * @param {HTMLElement} bodyEl
+   * @param {Element} postEl
+   * @returns {boolean}
+   */
+  function mountNativePostMedia(bodyEl, postEl) {
+    restoreNativePostMedia();
+    var media = findPostMediaEl(postEl);
+    if (!media || !bodyEl) return false;
+
+    var mount = document.createElement("div");
+    mount.className = "redium-post-media-mount";
+    bodyEl.appendChild(mount);
+
+    nativeMediaRestore = {
+      media: media,
+      parent: media.parentNode,
+      nextSibling: media.nextSibling,
+    };
+    mount.appendChild(media);
+    return true;
+  }
+
+  function removeRediumRoot() {
+    restoreNativePostMedia();
+    var rootEl = document.getElementById("redium-root");
+    if (rootEl) rootEl.remove();
+  }
+
+
+  /**
+   * @param {ParentNode} root
+   */
+  function normalizeClonedImages(root) {
+    if (!root) return;
+    root.querySelectorAll("img").forEach(function (img) {
+      if (img.closest(".redium-post-media-mount")) return;
+      var src = imageSrcFromImg(img);
+      if (src) img.src = src;
+      img.removeAttribute("srcset");
+      img.loading = "lazy";
+    });
+  }
+
+  /**
    * @param {Element} postEl
    * @returns {{ title: string, author: string, subreddit: string, createdLabel: string, score: string, bodyHtml: string, permalink: string }}
    */
@@ -102,16 +204,7 @@ import {
       'div[slot="text-body"]',
       '[slot="text-body"]',
     ]);
-    let bodyHtml = bodySlot ? bodySlot.innerHTML : "";
-
-    if (!bodyHtml.trim()) {
-      const media = firstMatch(postEl, [
-        '[slot="post-media-container"]',
-        '[slot="gallery"]',
-        "shreddit-aspect-ratio",
-      ]);
-      if (media) bodyHtml = media.outerHTML;
-    }
+    const bodyHtml = bodySlot ? bodySlot.innerHTML : "";
 
     const fullLink = firstMatch(postEl, [
       'a[slot="full-post-link"]',
@@ -562,9 +655,12 @@ import {
 
     const body = document.createElement("div");
     body.className = "redium-post-body";
-    if (post.bodyHtml && post.bodyHtml.trim()) {
+    var hasText = !!(post.bodyHtml && post.bodyHtml.trim());
+    var hasMedia = !!(postSourceEl && hasPostMedia(postSourceEl));
+    if (hasText) {
       body.innerHTML = post.bodyHtml;
-    } else {
+      normalizeClonedImages(body);
+    } else if (!hasMedia) {
       const muted = document.createElement("p");
       muted.className = "redium-muted";
       muted.textContent = "No text in this post (link or media only).";
@@ -575,6 +671,9 @@ import {
       out.textContent = "View post on Reddit";
       out.rel = "noreferrer noopener";
       body.appendChild(out);
+    }
+    if (postSourceEl && hasMedia) {
+      mountNativePostMedia(body, postSourceEl);
     }
 
     wrap.appendChild(h1);
@@ -798,8 +897,7 @@ import {
     stopReaderEffects();
     readerState.treeEl = null;
     readerState.commentsMount = null;
-    const rootEl = document.getElementById("redium-root");
-    if (rootEl) rootEl.remove();
+    removeRediumRoot();
     lastBuiltPostPath = "";
     const toggleEl = document.getElementById("redium-toggle");
     if (toggleEl) toggleEl.remove();
@@ -1352,8 +1450,7 @@ import {
         stopReaderEffects();
         readerState.treeEl = null;
         readerState.commentsMount = null;
-        const prev = document.getElementById("redium-root");
-        if (prev) prev.remove();
+        removeRediumRoot();
         lastBuiltPostPath = "";
       }
       syncToolbarIcon();
@@ -1535,8 +1632,7 @@ import {
     mainGeneration += 1;
     const gen = mainGeneration;
 
-    const existingRoot = document.getElementById("redium-root");
-    if (existingRoot) existingRoot.remove();
+    removeRediumRoot();
 
     stopReaderEffects();
     readerState.treeEl = null;
