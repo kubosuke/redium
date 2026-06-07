@@ -359,7 +359,10 @@
   box-sizing: border-box;
   padding: 48px 24px 80px;
   background: #fff;
-  /* Thread collapse chip: mask vertical border where icon overlaps reader canvas */
+  /* Thread rail: Reddit main-thread-line (tone-4 / tone-2 hover) */
+  --redium-thread-gutter: 32px;
+  --redium-thread-line: #e4e4e4;
+  --redium-thread-line-hover: #434343;
   --redium-canvas: #ffffff;
   --redium-canvas-hover: #ececec;
   --redium-font-reader: var(--redium-font-serif);
@@ -556,15 +559,6 @@
 
 .redium-comment {
   margin-bottom: 20px;
-  padding-left: 16px;
-  border-left: 2px solid rgba(0, 0, 0, 0.06);
-  --redium-thread-gutter: 18px; /* border 2px + padding 16px — collapse control aligns to border */
-}
-
-.redium-comment[data-depth="0"] {
-  padding-left: 0;
-  border-left: none;
-  --redium-thread-gutter: 0px;
 }
 
 .redium-comment-header {
@@ -607,25 +601,46 @@
   font-size: 13px;
 }
 
-/* Collapse / expand nested replies — sit on the same vertical as border-left */
-.redium-comment-collapse-row {
-  display: flex;
-  align-items: center;
+/* Reply subtree — Reddit-style main-thread-line rail */
+.redium-comment-thread {
+  position: relative;
   margin-top: 10px;
 }
 
-/* Pull nested rows onto the thread rail (border was inset by padding; body/header stay indented). */
-.redium-comment:not([data-depth="0"]) .redium-comment-collapse-row {
-  margin-left: calc(-1 * var(--redium-thread-gutter, 18px));
-  width: calc(100% + var(--redium-thread-gutter, 18px));
-  box-sizing: border-box;
+.redium-thread-rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--redium-thread-gutter);
+  display: flex;
+  justify-content: center;
+  z-index: 0;
+  cursor: pointer;
 }
 
-/* Center the control on the 2px border (midline at 1px) — same for top-level and nested. */
+.main-thread-line {
+  width: 1px;
+  height: 100%;
+  background: var(--redium-thread-line);
+  transition: background 0.15s ease;
+}
+
+.redium-thread-rail:hover .main-thread-line {
+  background: var(--redium-thread-line-hover);
+}
+
+/* Collapse / expand control — centered on the 1px thread line */
+.redium-comment-collapse-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--redium-thread-gutter);
+  position: relative;
+  z-index: 1;
+}
+
 .redium-comment-collapse-row .redium-thread-toggle {
   flex-shrink: 0;
-  margin-left: 1px;
-  transform: translateX(-50%);
   position: relative;
   z-index: 1;
   background: var(--redium-canvas, #fff);
@@ -688,8 +703,8 @@
 
 .redium-thread-toggle-icons svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .redium-thread-toggle[aria-expanded="true"] .redium-thread-icon-plus {
@@ -736,6 +751,8 @@
   background: #f7f1e3;
   --redium-canvas: #f7f1e3;
   --redium-canvas-hover: #ebe4d6;
+  --redium-thread-line: rgba(44, 36, 22, 0.14);
+  --redium-thread-line-hover: rgba(44, 36, 22, 0.42);
   color: #3d3428;
 }
 
@@ -780,10 +797,6 @@
 :root[data-redium-theme="sepia"] .redium-comments-heading {
   color: rgba(44, 36, 22, 0.5);
   border-bottom-color: rgba(44, 36, 22, 0.12);
-}
-
-:root[data-redium-theme="sepia"] .redium-comment {
-  border-left-color: rgba(44, 36, 22, 0.12);
 }
 
 :root[data-redium-theme="sepia"] .redium-comment-header strong {
@@ -897,6 +910,8 @@
   background: #121212;
   --redium-canvas: #121212;
   --redium-canvas-hover: #1e1e1e;
+  --redium-thread-line: rgba(255, 255, 255, 0.12);
+  --redium-thread-line-hover: rgba(255, 255, 255, 0.38);
   color: rgba(255, 255, 255, 0.87);
 }
 
@@ -941,10 +956,6 @@
 :root[data-redium-theme="black"] .redium-comments-heading {
   color: rgba(255, 255, 255, 0.45);
   border-bottom-color: rgba(255, 255, 255, 0.12);
-}
-
-:root[data-redium-theme="black"] .redium-comment {
-  border-left-color: rgba(255, 255, 255, 0.12);
 }
 
 :root[data-redium-theme="black"] .redium-comment-header strong {
