@@ -370,117 +370,6 @@ import {
     "</svg>";
 
   /**
-   * Clone an SVG from Reddit's comment UI for the thread expand affordance (never assign raw HTML — Trusted Types).
-   * @param {Element | null} treeEl
-   * @returns {SVGElement|null}
-   */
-  function tryCloneRedditExpandGlyph(treeEl) {
-    if (!treeEl) return null;
-    var btns = treeEl.querySelectorAll("shreddit-comment button");
-    var i;
-    var lab;
-    for (i = 0; i < btns.length; i++) {
-      lab = (btns[i].getAttribute("aria-label") || "").toLowerCase();
-      if (
-        lab.indexOf("more repl") !== -1 ||
-        lab.indexOf("continue thread") !== -1 ||
-        lab.indexOf("continue this thread") !== -1 ||
-        lab.indexOf("view more repl") !== -1 ||
-        (lab.indexOf("expand") !== -1 && lab.indexOf("comment") !== -1)
-      ) {
-        var svg = btns[i].querySelector("svg");
-        if (svg) return /** @type {SVGElement} */ (svg.cloneNode(true));
-      }
-    }
-    var fp = treeEl.querySelector(
-      "shreddit-comment faceplate-icon svg, shreddit-comment faceplate-icon svg"
-    );
-    if (fp) return /** @type {SVGElement} */ (fp.cloneNode(true));
-    return null;
-  }
-
-  /**
-   * @returns {SVGElement}
-   */
-  function createFallbackCirclePlusSvg() {
-    var ns = "http://www.w3.org/2000/svg";
-    var svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("width", "20");
-    svg.setAttribute("height", "20");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("aria-hidden", "true");
-    svg.classList.add("redium-thread-svg-glyph");
-    var c = document.createElementNS(ns, "circle");
-    c.setAttribute("cx", "12");
-    c.setAttribute("cy", "12");
-    c.setAttribute("r", "9");
-    c.setAttribute("stroke", "currentColor");
-    c.setAttribute("stroke-width", "1.5");
-    svg.appendChild(c);
-    var p = document.createElementNS(ns, "path");
-    p.setAttribute("d", "M12 8v8M8 12h8");
-    p.setAttribute("stroke", "currentColor");
-    p.setAttribute("stroke-width", "1.5");
-    p.setAttribute("stroke-linecap", "round");
-    svg.appendChild(p);
-    return svg;
-  }
-
-  /**
-   * @returns {SVGElement}
-   */
-  function createFallbackCircleMinusSvg() {
-    var ns = "http://www.w3.org/2000/svg";
-    var svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("width", "20");
-    svg.setAttribute("height", "20");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("aria-hidden", "true");
-    svg.classList.add("redium-thread-svg-glyph");
-    var c = document.createElementNS(ns, "circle");
-    c.setAttribute("cx", "12");
-    c.setAttribute("cy", "12");
-    c.setAttribute("r", "9");
-    c.setAttribute("stroke", "currentColor");
-    c.setAttribute("stroke-width", "1.5");
-    svg.appendChild(c);
-    var p = document.createElementNS(ns, "path");
-    p.setAttribute("d", "M8 12h8");
-    p.setAttribute("stroke", "currentColor");
-    p.setAttribute("stroke-width", "1.5");
-    p.setAttribute("stroke-linecap", "round");
-    svg.appendChild(p);
-    return svg;
-  }
-
-  /**
-   * @param {SVGElement | null} redditExpandGlyph Template from Reddit or null
-   * @returns {HTMLSpanElement}
-   */
-  function buildThreadToggleIcons(redditExpandGlyph) {
-    var wrap = document.createElement("span");
-    wrap.className = "redium-thread-toggle-icons";
-
-    var plusWrap = document.createElement("span");
-    plusWrap.className = "redium-thread-icon-plus";
-    if (redditExpandGlyph) {
-      plusWrap.appendChild(redditExpandGlyph.cloneNode(true));
-    } else {
-      plusWrap.appendChild(createFallbackCirclePlusSvg());
-    }
-
-    var minusWrap = document.createElement("span");
-    minusWrap.className = "redium-thread-icon-minus";
-    minusWrap.appendChild(createFallbackCircleMinusSvg());
-
-    wrap.appendChild(plusWrap);
-    wrap.appendChild(minusWrap);
-    return wrap;
-  }
-
-  /**
    * Keep post score text in sync with live `shreddit-post` `score` attribute.
    * @param {Element} postSourceEl
    * @param {HTMLElement} countEl
@@ -686,10 +575,9 @@ import {
   /**
    * @param {any} node
    * @param {number} depth
-   * @param {SVGElement | null} [redditExpandGlyph] cloned Reddit expand SVG template (optional)
    * @returns {HTMLElement}
    */
-  function renderCommentNode(node, depth, redditExpandGlyph) {
+  function renderCommentNode(node, depth) {
     const div = document.createElement("div");
     div.className = "redium-comment";
     div.setAttribute("data-depth", String(depth));
@@ -746,48 +634,13 @@ import {
     div.appendChild(body);
 
     if (node.children && node.children.length) {
-      const n = node.children.length;
-      const replyWord = n === 1 ? "reply" : "replies";
-
-      const toggleRow = document.createElement("div");
-      toggleRow.className = "redium-comment-collapse-row";
-
-      const toggleBtn = document.createElement("button");
-      toggleBtn.type = "button";
-      toggleBtn.className = "redium-thread-toggle";
-      toggleBtn.setAttribute("aria-expanded", "true");
-      toggleBtn.setAttribute(
-        "aria-label",
-        "Collapse " + n + " " + replyWord
-      );
-      toggleBtn.appendChild(buildThreadToggleIcons(redditExpandGlyph));
-
       const kids = document.createElement("div");
       kids.className = "redium-children";
 
-      toggleBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        const exp = toggleBtn.getAttribute("aria-expanded") === "true";
-        const nextExpanded = !exp;
-        toggleBtn.setAttribute(
-          "aria-expanded",
-          nextExpanded ? "true" : "false"
-        );
-        kids.classList.toggle("redium-children-collapsed", !nextExpanded);
-        toggleBtn.setAttribute(
-          "aria-label",
-          (nextExpanded ? "Collapse " : "Expand ") + n + " " + replyWord
-        );
-      });
-
       for (let i = 0; i < node.children.length; i++) {
-        kids.appendChild(
-          renderCommentNode(node.children[i], depth + 1, redditExpandGlyph)
-        );
+        kids.appendChild(renderCommentNode(node.children[i], depth + 1));
       }
 
-      toggleRow.appendChild(toggleBtn);
-      div.appendChild(toggleRow);
       div.appendChild(kids);
     }
 
@@ -796,7 +649,7 @@ import {
 
   /**
    * @param {any[]} roots
-   * @param {Element | null} treeEl Live comment tree (for cloning Reddit expand icon)
+   * @param {Element | null} treeEl Live comment tree
    * @returns {HTMLElement}
    */
   function renderCommentsSection(roots, treeEl) {
@@ -807,12 +660,10 @@ import {
     h2.className = "redium-comments-heading";
     h2.textContent = "Comments";
 
-    const redditExpandGlyph = tryCloneRedditExpandGlyph(treeEl);
-
     const container = document.createElement("div");
     container.id = "redium-comments-root";
     for (let i = 0; i < roots.length; i++) {
-      container.appendChild(renderCommentNode(roots[i], 0, redditExpandGlyph));
+      container.appendChild(renderCommentNode(roots[i], 0));
     }
 
     section.appendChild(h2);
@@ -1170,12 +1021,9 @@ import {
     function syncComments() {
       clearCommentScoreRegistry();
       const next = extractCommentsFromTree(treeEl);
-      const redditExpandGlyph = tryCloneRedditExpandGlyph(treeEl);
       commentsMount.replaceChildren();
       for (let i = 0; i < next.length; i++) {
-        commentsMount.appendChild(
-          renderCommentNode(next[i], 0, redditExpandGlyph)
-        );
+        commentsMount.appendChild(renderCommentNode(next[i], 0));
       }
     }
 

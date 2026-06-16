@@ -359,7 +359,6 @@
   box-sizing: border-box;
   padding: 48px 24px 80px;
   background: #fff;
-  /* Thread collapse chip: mask vertical border where icon overlaps reader canvas */
   --redium-canvas: #ffffff;
   --redium-canvas-hover: #ececec;
   --redium-font-reader: var(--redium-font-serif);
@@ -558,13 +557,11 @@
   margin-bottom: 20px;
   padding-left: 16px;
   border-left: 2px solid rgba(0, 0, 0, 0.06);
-  --redium-thread-gutter: 18px; /* border 2px + padding 16px — collapse control aligns to border */
 }
 
 .redium-comment[data-depth="0"] {
   padding-left: 0;
   border-left: none;
-  --redium-thread-gutter: 0px;
 }
 
 .redium-comment-header {
@@ -605,103 +602,6 @@
 
 .redium-clap-comment .redium-clap-count {
   font-size: 13px;
-}
-
-/* Collapse / expand nested replies — sit on the same vertical as border-left */
-.redium-comment-collapse-row {
-  display: flex;
-  align-items: center;
-  margin-top: 10px;
-}
-
-/* Pull nested rows onto the thread rail (border was inset by padding; body/header stay indented). */
-.redium-comment:not([data-depth="0"]) .redium-comment-collapse-row {
-  margin-left: calc(-1 * var(--redium-thread-gutter, 18px));
-  width: calc(100% + var(--redium-thread-gutter, 18px));
-  box-sizing: border-box;
-}
-
-/* Center the control on the 2px border (midline at 1px) — same for top-level and nested. */
-.redium-comment-collapse-row .redium-thread-toggle {
-  flex-shrink: 0;
-  margin-left: 1px;
-  transform: translateX(-50%);
-  position: relative;
-  z-index: 1;
-  background: var(--redium-canvas, #fff);
-  /* Halo matches canvas so the thread line does not show through the chip */
-  box-shadow: 0 0 0 5px var(--redium-canvas, #fff);
-  transition:
-    background 0.15s ease,
-    box-shadow 0.15s ease,
-    color 0.15s ease;
-}
-
-.redium-comment-collapse-row .redium-thread-toggle:hover {
-  background: var(--redium-canvas-hover, #ececec);
-  box-shadow: 0 0 0 5px var(--redium-canvas-hover, #ececec);
-  color: rgba(0, 0, 0, 0.72);
-}
-
-.redium-thread-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  margin: 0;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
-  color: rgba(0, 0, 0, 0.42);
-  cursor: pointer;
-  line-height: 0;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-}
-
-.redium-thread-toggle:hover {
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.72);
-}
-
-.redium-thread-toggle:focus {
-  outline: none;
-}
-
-.redium-thread-toggle:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-}
-
-.redium-thread-toggle-icons {
-  display: inline-flex;
-  align-items: center;
-}
-
-.redium-thread-toggle-icons .redium-thread-icon-plus,
-.redium-thread-toggle-icons .redium-thread-icon-minus {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.redium-thread-toggle-icons svg {
-  display: block;
-  width: 20px;
-  height: 20px;
-}
-
-.redium-thread-toggle[aria-expanded="true"] .redium-thread-icon-plus {
-  display: none;
-}
-
-.redium-thread-toggle[aria-expanded="false"] .redium-thread-icon-minus {
-  display: none;
-}
-
-.redium-children.redium-children-collapsed {
-  display: none;
 }
 
 .redium-children {
@@ -788,27 +688,6 @@
 
 :root[data-redium-theme="sepia"] .redium-comment-header strong {
   color: #2c2416;
-}
-
-:root[data-redium-theme="sepia"] .redium-thread-toggle {
-  color: rgba(62, 47, 28, 0.4);
-}
-
-:root[data-redium-theme="sepia"] .redium-thread-toggle:hover {
-  background: rgba(44, 36, 22, 0.08);
-  color: rgba(44, 36, 22, 0.78);
-}
-
-/* Rail chip: keep canvas fill (generic hover above would use translucent brown) */
-:root[data-redium-theme="sepia"] .redium-comment-collapse-row .redium-thread-toggle {
-  background: var(--redium-canvas);
-  box-shadow: 0 0 0 5px var(--redium-canvas);
-}
-
-:root[data-redium-theme="sepia"] .redium-comment-collapse-row .redium-thread-toggle:hover {
-  background: var(--redium-canvas-hover);
-  box-shadow: 0 0 0 5px var(--redium-canvas-hover);
-  color: rgba(44, 36, 22, 0.78);
 }
 
 :root[data-redium-theme="sepia"] .redium-muted {
@@ -949,26 +828,6 @@
 
 :root[data-redium-theme="black"] .redium-comment-header strong {
   color: rgba(255, 255, 255, 0.9);
-}
-
-:root[data-redium-theme="black"] .redium-thread-toggle {
-  color: rgba(255, 255, 255, 0.42);
-}
-
-:root[data-redium-theme="black"] .redium-thread-toggle:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-:root[data-redium-theme="black"] .redium-comment-collapse-row .redium-thread-toggle {
-  background: var(--redium-canvas);
-  box-shadow: 0 0 0 5px var(--redium-canvas);
-}
-
-:root[data-redium-theme="black"] .redium-comment-collapse-row .redium-thread-toggle:hover {
-  background: var(--redium-canvas-hover);
-  box-shadow: 0 0 0 5px var(--redium-canvas-hover);
-  color: rgba(255, 255, 255, 0.85);
 }
 
 :root[data-redium-theme="black"] .redium-muted {
