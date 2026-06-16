@@ -6,6 +6,6 @@
 
 <strong>Medium-ify Reddit</strong>
 
-<sub>Install🖥️ from <a href="">Chrome Webstore</a></sub>
+<sub>Install🖥️ from <a href="https://chromewebstore.google.com/detail/redium/mgoolbbkjjbapjpkkchlafkndoeekpab?hl=en">Chrome Webstore</a></sub>
 
 </div>
